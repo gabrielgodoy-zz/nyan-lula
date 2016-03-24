@@ -1,0 +1,54 @@
+html, body {
+	height: 100%;
+	padding: 0;
+	margin: 0;
+}
+
+body {
+	background: #0f4d8f;
+	display:flex;
+	justify-content:center;
+	align-items:center;
+}
+
+@keyframes animRainbow {
+	0% {
+	    transform: translateY(0%);
+	}
+	50% {
+	    transform: translateY(-8%);
+	}
+	100% {
+	    transform: translateY(0%);
+	}
+}
+
+.lula-nyan .rainbow {
+	position: absolute;
+	height: 180px;
+	width: 50%;
+	left: 0;
+	top: calc(50% - 109px);
+	font-size: 0;
+}
+.lula-nyan .rainbow .part-even, .lula-nyan .rainbow .part-odd {
+	display: inline-block;
+	height: 100%;
+    animation-name: animRainbow;
+    animation-duration: 0.6s;
+    animation-iteration-count: infinite;
+}
+.lula-nyan .rainbow .part-even {
+	background: linear-gradient( 0deg, yellow 50%, green 50%);
+	width: 10%;
+    animation-direction: reverse;
+}
+.lula-nyan .rainbow .part-odd {
+	background: linear-gradient( 0deg, yellow 50%, green 50%);
+    transform: translateY(-8%);
+	width: 10%;
+}
+.lula-nyan img {
+	position: relative;
+	z-index: 9;
+}
