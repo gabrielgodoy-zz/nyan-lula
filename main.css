@@ -7,6 +7,7 @@ html, body {
 body {
 	background: #0f4d8f;
 	display:flex;
+	overflow: hidden;
 	justify-content:center;
 	align-items:center;
 }
