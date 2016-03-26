@@ -1,0 +1,150 @@
+* {
+    box-sizing: border-box;
+    transform: translate3d(0,0,0);
+}
+
+html, body {
+	height: 100%;
+	padding: 0;
+	margin: 0;
+}
+
+body {
+	background: #0f4d8f;
+	display:flex;
+	justify-content:center;
+	align-items:center;
+    overflow: hidden;
+}
+
+header {
+    position: absolute;
+    width: 100%;
+    left: 0;
+    height: 80px;
+}
+
+footer {
+    background: #0b3664;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    padding-top: 10px;
+    height: 60px;
+    text-align: center;
+    left: 0;
+}
+
+.github-corner:hover .octo-arm {
+  animation: octocat-wave 560ms ease-in-out;
+}
+
+.octo-arm, .octo-body {
+    fill: #0f4d8f;
+}
+
+.github-holder p {
+    color: white;
+    font-family: Arial;
+    display: inline-block;
+    margin-right: 10px;
+    position: relative;
+    top: -5px;
+}
+.github-holder p a {
+    color: white;
+    text-decoration: none;
+    color: #84b6eb;
+}
+
+@keyframes octocat-wave {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    20% {
+        transform: rotate(-25deg);
+    }
+
+    40% {
+        transform: rotate(10deg);
+    }
+
+    60% {
+        transform: rotate(-25deg);
+    }
+
+    80% {
+        transform: rotate(10deg);
+    }
+
+    100% {
+        transform: rotate(0deg);
+    }
+}
+
+@media (max-width: 500px) {
+    .github-corner:hover .octo-arm {
+        animation: none;
+    }
+    .github-corner .octo-arm {
+        animation: octocat-wave 560ms ease-in-out;
+    }
+}
+
+.body-gameover {
+    background: #444;
+    -webkit-filter: grayscale(100%);
+    transition: -webkit-filter 0.5s;
+}
+
+.score {
+    font-size: 20px;
+    position: absolute;
+    top: 10px;
+    right: 95px;
+    letter-spacing: 5px;
+    font-family: Arial;
+    color: white;
+}
+
+@keyframes rainbowZigZag {
+    0% {
+        transform: translateY(0%);
+    }
+    50% {
+        transform: translateY(10%);
+    }
+    100% {
+        transform: translateY(0%);
+    }
+}
+
+#nyan-lula {
+	background: url('../images/lula.gif') no-repeat;
+    background-size: 100%;
+    height: 100px;
+    position: relative;
+    width: 150px;
+    transition: top 0.1s, left 0.1s;
+}
+
+.part {
+    /*animation: rainbowZigZag 0.2s infinite;*/
+    background: linear-gradient(green 50%, yellow 50%);
+    position: absolute;
+    height: 70px;
+    width: 20px;
+    top: -5px;
+    left: 0;
+    z-index: -1;
+}
+
+.enemy {
+    position: absolute;
+    height: 50px;
+    width: 50px;
+    transition: left 0.3s;
+    top: 250px;
+    background: red;
+}
