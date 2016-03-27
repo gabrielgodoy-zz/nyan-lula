@@ -10,13 +10,17 @@ window.onload = () => {
         */
         var lulaEl = document.getElementById('nyan-lula'),
             scoreEl = document.getElementsByClassName('score')[0],
+            moveStars,
+            starsEl,
             enemiesEl,
+            createStar,
             moveEnemies,
             gameOver = false,
             animScore,
             animRainbow,
             moveLula,
-            timeToSpawn = 1000;
+            timeToSpawn = 1000,
+            enemySpeed = 50;
 
         var moves = {
             movingLeft: false,
@@ -48,28 +52,55 @@ window.onload = () => {
             var enemyNewLeft;
 
             for (var i = 0, enemyLength = enemiesEl.length; i < enemyLength; i++) {
-                enemyNewLeft = (enemiesEl[i].style.left.replace('px', '') - 20) + 'px';
+                enemyNewLeft = (enemiesEl[i].style.left.replace('px', '') - enemySpeed) + 'px';
                 enemiesEl[i].style.left = enemyNewLeft;
-                if (enemiesEl[i].offsetLeft < 70) {
+                if (enemiesEl[i].offsetLeft < -170) {
                     document.body.removeChild(enemiesEl[i]);
                 }
             }
         }, 90);
 
+        moveStars = setInterval(() => {
+            starsEl = document.querySelectorAll('.star');
+            var starNewLeft;
+
+            for (var i = 0, starsLength = starsEl.length; i < starsLength; i++) {
+                starNewLeft = (starsEl[i].style.left.replace('px', '') - 10) + 'px';
+                starsEl[i].style.left = starNewLeft;
+                if (starsEl[i].offsetLeft < -7) {
+                    document.body.removeChild(starsEl[i]);
+                }
+            }
+        }, 100);
+
+        createStar = setInterval(() => {
+            createElement('star');
+        }, 1000);
+
         animScore = setInterval(() => {
             scoreEl.innerHTML = Number(scoreEl.innerHTML) + 1;
-
             if (Number(scoreEl.innerHTML) >= 100) {
                 timeToSpawn = 700;
-            } else if (Number(scoreEl.innerHTML) >= 300) {
-                timeToSpawn = 500;
-            } else if (Number(scoreEl.innerHTML) >= 400) {
+            } else if (Number(scoreEl.innerHTML) >= 200) {
+                enemySpeed = 80;
                 timeToSpawn = 300;
+            } else if (Number(scoreEl.innerHTML) >= 300) {
+                timeToSpawn = 240;
+                enemySpeed = 100;
+            } else if (Number(scoreEl.innerHTML) >= 400) {
+                timeToSpawn = 180;
+                enemySpeed = 120;
             } else if (Number(scoreEl.innerHTML) >= 500) {
-                timeToSpawn = 200;
-            } else if (Number(scoreEl.innerHTML) >= 600) {
-                timeToSpawn = 100;
+                timeToSpawn = 120;
+                enemySpeed = 150;
+            } else if (Number(scoreEl.innerHTML) >= 800) {
+                timeToSpawn = 50;
+                enemySpeed = 160;
+            } else if (Number(scoreEl.innerHTML) >= 1000) {
+                timeToSpawn = 20;
+                enemySpeed = 220;
             }
+
         }, 100);
 
         moveLula = setInterval(() => {
@@ -134,16 +165,17 @@ window.onload = () => {
             document.body.appendChild(div);
         }
 
-        function createEnemy() {
+        function createElement(elClass) {
             var div = document.createElement('div');
-            div.className = 'enemy';
+            div.className = elClass;
             div.style.top = Math.floor(Math.random() * (document.documentElement.offsetHeight - 100) + 1) + 'px';
             div.style.left = document.documentElement.offsetWidth + 'px';
             document.body.appendChild(div);
         }
 
+
         function spawnEnemy() {
-            createEnemy();
+            createElement('enemy');
             spawnEnemyTimer = setTimeout(spawnEnemy, timeToSpawn);
         }
 
