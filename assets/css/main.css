@@ -26,6 +26,7 @@ header {
     position: absolute;
     width: 100%;
     left: 0;
+    top: 0;
     height: 80px;
     z-index: 9;
 }
