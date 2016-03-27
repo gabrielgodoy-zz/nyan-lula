@@ -53,6 +53,8 @@ window.onload = () => {
 
         function restartGame() {
             startGame();
+            sadMusic.pause();
+            nyanMusic.play();
             gameOver = false;
             timeToSpawn = 1000;
 
