@@ -121,6 +121,7 @@ window.onload = () => {
 
                     clearInterval(animScore);
                     clearInterval(moveEnemies);
+                    clearInterval(moveStars);
                     clearTimeout(spawnEnemyTimer);
                     gameOver = true;
                     document.body.classList.add('body-gameover');
