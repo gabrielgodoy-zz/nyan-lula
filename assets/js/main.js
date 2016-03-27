@@ -12,13 +12,16 @@ window.onload = () => {
             scoreEl = document.getElementsByClassName('score')[0],
             nyanMusic = document.getElementById('nyan-music'),
             sadMusic = document.getElementById('sad-music'),
+            urlApp = 'http://gabrielgodoy.com/nyan-lula/',
             moveStars,
             starsEl,
             enemiesEl,
             createStar,
+            spawnEnemyTimer,
             moveEnemies,
             gameOver = false,
             animScore,
+            finalScore,
             animRainbow,
             moveLula,
             timeToSpawn = 1000,
@@ -34,6 +37,7 @@ window.onload = () => {
         /* =============================================================
         Intervals
         */
+
         // animRainbow = setInterval(() => {
         //     createRainbowPart();
         //     var rainbowParts = document.querySelectorAll('.part'),
@@ -47,114 +51,160 @@ window.onload = () => {
         //     }
         // }, 30);
 
-        var spawnEnemyTimer = setTimeout(spawnEnemy, timeToSpawn);
+        function restartGame() {
+            startGame();
+            gameOver = false;
+            timeToSpawn = 1000;
 
-        moveEnemies = setInterval(() => {
-            enemiesEl = document.querySelectorAll('.enemy');
-            var enemyNewLeft;
+            document.getElementsByClassName('score')[0].innerHTML = 0;
 
-            for (var i = 0, enemyLength = enemiesEl.length; i < enemyLength; i++) {
-                enemyNewLeft = (enemiesEl[i].style.left.replace('px', '') - enemySpeed) + 'px';
-                enemiesEl[i].style.left = enemyNewLeft;
-                if (enemiesEl[i].offsetLeft < -170) {
-                    document.body.removeChild(enemiesEl[i]);
-                }
-            }
-        }, 90);
+            document.getElementsByClassName('container')[0].classList.remove('body-gameover');
+            document.getElementsByClassName('mask')[0].classList.remove('active');
+            document.getElementsByClassName('restart-popup')[0].classList.remove('active-popup');
 
-        moveStars = setInterval(() => {
-            starsEl = document.querySelectorAll('.star');
-            var starNewLeft;
+            document.getElementById('nyan-lula').style.left = '';
+            document.getElementById('nyan-lula').style.top = '';
 
-            for (var i = 0, starsLength = starsEl.length; i < starsLength; i++) {
-                starNewLeft = (starsEl[i].style.left.replace('px', '') - 10) + 'px';
-                starsEl[i].style.left = starNewLeft;
-                if (starsEl[i].offsetLeft < -7) {
-                    document.body.removeChild(starsEl[i]);
-                }
-            }
-        }, 100);
-
-        createStar = setInterval(() => {
-            createElement('star');
-        }, 1000);
-
-        animScore = setInterval(() => {
-            scoreEl.innerHTML = Number(scoreEl.innerHTML) + 1;
-            if (Number(scoreEl.innerHTML) >= 100) {
-                timeToSpawn = 700;
-            } else if (Number(scoreEl.innerHTML) >= 200) {
-                enemySpeed = 80;
-                timeToSpawn = 300;
-            } else if (Number(scoreEl.innerHTML) >= 300) {
-                timeToSpawn = 240;
-                enemySpeed = 100;
-            } else if (Number(scoreEl.innerHTML) >= 400) {
-                timeToSpawn = 180;
-                enemySpeed = 120;
-            } else if (Number(scoreEl.innerHTML) >= 500) {
-                timeToSpawn = 120;
-                enemySpeed = 150;
-            } else if (Number(scoreEl.innerHTML) >= 800) {
-                timeToSpawn = 50;
-                enemySpeed = 160;
-            } else if (Number(scoreEl.innerHTML) >= 1000) {
-                timeToSpawn = 20;
-                enemySpeed = 220;
+            var enemies = document.body.querySelectorAll('.enemy');
+            for (var i = 0, enemiesLength = enemies.length; i < enemiesLength; i++) {
+                document.body.removeChild(enemies[i]);
             }
 
-        }, 100);
+            var stars = document.body.querySelectorAll('.star');
+            for (var j = 0, starsLength = stars.length; j < starsLength; j++) {
+                document.body.removeChild(stars[j]);
+            }
 
-        moveLula = setInterval(() => {
-            var lula = {
-                    leftPosClean: Number(lulaEl.style.left.replace('px', '')),
-                    topPosClean: Number(lulaEl.style.top.replace('px', '')),
-                    pxToMove: 20
-                },
-                docHeight = document.documentElement.offsetHeight,
-                docWidth = document.documentElement.offsetWidth,
+        }
+
+        function startGame() {
+            document.getElementsByClassName('mask')[0].classList.remove('active');
+            document.getElementsByClassName('start-popup')[0].classList.remove('active-popup');
+            document.getElementsByClassName('start-popup')[0].classList.add('hide-popup');
+
+            spawnEnemyTimer = setTimeout(spawnEnemy, timeToSpawn);
+            moveEnemies = setInterval(() => {
                 enemiesEl = document.querySelectorAll('.enemy');
-
-            for (var i = 0, enemyLength = enemiesEl.length; i < enemyLength; i++) {
-                if (lulaEl.offsetLeft + lulaEl.offsetWidth > enemiesEl[i].offsetLeft &&
-                    lulaEl.offsetLeft < enemiesEl[i].offsetLeft + enemiesEl[i].offsetWidth &&
-                    lulaEl.offsetTop < enemiesEl[i].offsetTop + enemiesEl[i].offsetHeight &&
-                    lulaEl.offsetTop + lulaEl.offsetHeight > enemiesEl[i].offsetTop) {
-
-                    clearInterval(animScore);
-                    clearInterval(moveEnemies);
-                    clearInterval(moveStars);
-                    clearTimeout(spawnEnemyTimer);
-                    gameOver = true;
-                    document.body.classList.add('body-gameover');
-                    nyanMusic.pause();
-                    sadMusic.play();
+                var enemyNewLeft;
+                for (var i = 0, enemyLength = enemiesEl.length; i < enemyLength; i++) {
+                    enemyNewLeft = (enemiesEl[i].style.left.replace('px', '') - enemySpeed) + 'px';
+                    enemiesEl[i].style.left = enemyNewLeft;
+                    if (enemiesEl[i].offsetLeft < -170) {
+                        document.body.removeChild(enemiesEl[i]);
+                    }
                 }
-            }
+            }, 90);
 
-            if (!gameOver) {
-                if (lulaEl.offsetLeft >= 20 && moves.movingLeft) {
-                    lulaEl.style.left = (lula.leftPosClean - lula.pxToMove) + 'px';
+            moveStars = setInterval(() => {
+                starsEl = document.querySelectorAll('.star');
+                var starNewLeft;
+
+                for (var i = 0, starsLength = starsEl.length; i < starsLength; i++) {
+                    starNewLeft = (starsEl[i].style.left.replace('px', '') - 10) + 'px';
+                    starsEl[i].style.left = starNewLeft;
+                    if (starsEl[i].offsetLeft < -7) {
+                        document.body.removeChild(starsEl[i]);
+                    }
+                }
+            }, 100);
+
+            createStar = setInterval(() => {
+                createElement('star');
+            }, 1000);
+
+            animScore = setInterval(() => {
+                scoreEl.innerHTML = Number(scoreEl.innerHTML) + 1;
+                if (Number(scoreEl.innerHTML) >= 100) {
+                    timeToSpawn = 700;
+                } else if (Number(scoreEl.innerHTML) >= 200) {
+                    enemySpeed = 80;
+                    timeToSpawn = 300;
+                } else if (Number(scoreEl.innerHTML) >= 300) {
+                    timeToSpawn = 240;
+                    enemySpeed = 100;
+                } else if (Number(scoreEl.innerHTML) >= 400) {
+                    timeToSpawn = 180;
+                    enemySpeed = 120;
+                } else if (Number(scoreEl.innerHTML) >= 500) {
+                    timeToSpawn = 120;
+                    enemySpeed = 150;
+                } else if (Number(scoreEl.innerHTML) >= 800) {
+                    timeToSpawn = 50;
+                    enemySpeed = 160;
+                } else if (Number(scoreEl.innerHTML) >= 1000) {
+                    timeToSpawn = 20;
+                    enemySpeed = 220;
+                }
+            }, 100);
+
+            moveLula = setInterval(() => {
+                var lula = {
+                        leftPosClean: Number(lulaEl.style.left.replace('px', '')),
+                        topPosClean: Number(lulaEl.style.top.replace('px', '')),
+                        pxToMove: 20
+                    },
+                    docHeight = document.documentElement.offsetHeight,
+                    docWidth = document.documentElement.offsetWidth,
+                    enemiesEl = document.querySelectorAll('.enemy');
+
+                for (var i = 0, enemyLength = enemiesEl.length; i < enemyLength; i++) {
+                    if (lulaEl.offsetLeft + lulaEl.offsetWidth > enemiesEl[i].offsetLeft &&
+                        lulaEl.offsetLeft < enemiesEl[i].offsetLeft + enemiesEl[i].offsetWidth &&
+                        lulaEl.offsetTop < enemiesEl[i].offsetTop + enemiesEl[i].offsetHeight &&
+                        lulaEl.offsetTop + lulaEl.offsetHeight > enemiesEl[i].offsetTop) {
+
+                        clearInterval(animScore);
+                        clearInterval(moveStars);
+                        clearInterval(moveLula);
+                        clearInterval(createStar);
+                        clearInterval(moveEnemies);
+                        clearTimeout(spawnEnemyTimer);
+
+                        gameOver = true;
+
+
+                        finalScore = document.getElementsByClassName('score')[0].innerHTML;
+                        document.getElementsByClassName('final-score')[0].innerHTML = finalScore + ' pontos';
+                        document.getElementsByClassName('container')[0].classList.add('body-gameover');
+
+                        // TO-DO: Facebook
+
+
+                        // Twitter
+                        var twitterMsg = 'https://twitter.com/intent/tweet?text=Fiz ' + finalScore + ' pontos no Nyan Lula. Tente me superar =) http://goo.gl/lUhxkD';
+                        document.getElementsByClassName('link-tw')[0].setAttribute('href', twitterMsg);
+
+                        document.getElementsByClassName('mask')[0].classList.add('active');
+                        document.getElementsByClassName('restart-popup')[0].classList.add('active-popup');
+                        nyanMusic.pause();
+                        sadMusic.play();
+                    }
                 }
 
-                if (docWidth - (lulaEl.offsetLeft + lulaEl.offsetWidth) >= 100 &&
-                    moves.movingRight) {
-                    lulaEl.style.left = (lula.leftPosClean + lula.pxToMove) + 'px';
-                }
+                if (!gameOver) {
+                    if (lulaEl.offsetLeft >= 20 && moves.movingLeft) {
+                        lulaEl.style.left = (lula.leftPosClean - lula.pxToMove) + 'px';
+                    }
 
-                if (
-                    lulaEl.offsetTop >= 20 && moves.movingUp) {
-                    lulaEl.style.top = (lula.topPosClean - lula.pxToMove) + 'px';
-                }
+                    if (docWidth - (lulaEl.offsetLeft + lulaEl.offsetWidth) >= 100 &&
+                        moves.movingRight) {
+                        lulaEl.style.left = (lula.leftPosClean + lula.pxToMove) + 'px';
+                    }
 
-                if (
-                    docHeight - (lulaEl.offsetTop + lulaEl.offsetHeight) >= 80 &&
-                    moves.movingDown
-                ) {
-                    lulaEl.style.top = (lula.topPosClean + lula.pxToMove) + 'px';
+                    if (
+                        lulaEl.offsetTop >= 20 && moves.movingUp) {
+                        lulaEl.style.top = (lula.topPosClean - lula.pxToMove) + 'px';
+                    }
+
+                    if (
+                        docHeight - (lulaEl.offsetTop + lulaEl.offsetHeight) >= 80 &&
+                        moves.movingDown
+                    ) {
+                        lulaEl.style.top = (lula.topPosClean + lula.pxToMove) + 'px';
+                    }
                 }
-            }
-        }, 80);
+            }, 80);
+        }
 
         /* =============================================================
         Functions
@@ -218,19 +268,48 @@ window.onload = () => {
             }
         }
 
+        // Popup Twitter
+        function popupwindow(url, title, w, h) {
+            var left = (screen.width / 2) - (w / 2);
+            var top = (screen.height / 2) - (h / 2);
+            return window.open(url, title, 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=' + w + ', height=' + h + ', top=' + top + ', left=' + left);
+        }
+
         function resizeDoc() {
             // TO-DO: Realign rainbow parts on window resize
         }
 
+        function shareTw(e) {
+            e.preventDefault();
+            popupwindow(this.href, 'Twitter', 600, 300);
+        }
+
+        function shareFb(e) {
+            e.preventDefault();
+            FB.ui({
+                method: 'feed',
+                link: urlApp,
+                name: 'Nyan Lula',
+                picture: 'https://raw.githubusercontent.com/gabrielgodoy/nyan-lula/gh-pages/assets/images/img-share.jpg',
+                description: 'Veja quando tempo você consegue fugir do Sérgio Moro!',
+                message: 'Mensagem'
+            });
+        }
+
         return {
             init() {
-                this.bindEvents();
-            },
-            bindEvents() {
-                document.addEventListener('keydown', keyDown);
-                document.addEventListener('keyup', keyUp);
-                window.addEventListener('resize', resizeDoc);
-            }
+                    this.bindEvents();
+                },
+                bindEvents() {
+                    document.addEventListener('keydown', keyDown);
+                    document.addEventListener('keyup', keyUp);
+                    document.getElementsByClassName('start-bt')[0].addEventListener('click', startGame);
+                    document.getElementsByClassName('restart-bt')[0].addEventListener('click', restartGame);
+                    window.addEventListener('resize', resizeDoc);
+
+                    document.getElementsByClassName('link-fb')[0].addEventListener('click', shareFb);
+                    document.getElementsByClassName('link-tw')[0].addEventListener('click', shareTw);
+                }
         };
     };
 

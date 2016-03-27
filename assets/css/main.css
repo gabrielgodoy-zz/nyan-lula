@@ -1,20 +1,25 @@
 * {
     box-sizing: border-box;
     transform: translate3d(0,0,0);
+    outline: 0;
 }
 
-html, body {
+html, body, .container {
 	height: 100%;
 	padding: 0;
 	margin: 0;
+    width: 100%;
 }
 
 body {
 	background: linear-gradient(#0f4d8f, #0b3664);
+    overflow: hidden;
+}
+
+.container {
 	display:flex;
 	justify-content:center;
 	align-items:center;
-    overflow: hidden;
 }
 
 header {
@@ -35,6 +40,163 @@ footer {
     text-align: center;
     left: 0;
     z-index: 9;
+}
+
+
+@keyframes bounce {
+    0% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+    75% {
+        transform: translate(-50%, -50%) scale(1.2);
+        opacity: 0.8;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 0;
+    }
+}
+
+.popup-container {
+    background: rgba(255,255,255,0.7);
+    position: absolute;
+    z-index: 19;
+    padding: 30px;
+    top: 50%;
+    text-align: center;
+    border-radius: 8px;
+    left: 50%;
+}
+
+.restart-popup {
+    transform: translate(-50%, -50%) scale(0);
+}
+.restart-popup.active-popup {
+    animation: bounce 0.5s;
+    animation-direction: reverse;
+    -webkit-filter: grayscale(0%) !important;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.start-popup {
+    transition: transform 0.2s opacity 0.2s;
+    transform: translate(-50%, -50%) scale(0);
+}
+.start-popup.hide-popup {
+    animation: bounce 0.5s;
+}
+.start-popup.active-popup {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.popup-container h2 {
+    color: #0f4d8f;
+    font-family: "Press Start 2P", cursive;
+    text-shadow: 2px 2px #FFD200, 4px 4px green;
+}
+.popup-container p {
+    color: #092c52;
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+}
+
+.bt-default {
+    background: linear-gradient(#0f4d8f 50%, #0b3664 50%);
+    border-radius: 5px;
+    border: 1px solid #84b6eb;
+    color: #FFD200;
+    cursor: pointer;
+    display: block;
+    margin: 0 auto;
+    transition: all 0.3s;
+    padding: 20px 50px;
+    font-family: 'Press Start 2P', cursive;
+}
+
+.gameover-desc {
+    margin-bottom: 25px;
+}
+
+.share-box {
+    text-align: center;
+    margin-right: 30px;
+}
+
+.share-box a {
+    text-decoration: none;
+}
+
+.share-box .icon {
+    width: 22px;
+    display: inline-block;
+    margin-top: 6px;
+    vertical-align: middle;
+}
+
+.share-box .icon.icon-fb {
+    margin-right: 4px;
+}
+
+.share-box .icon.icon-tw {
+    width: 24px;
+    margin-top: 2px;
+}
+
+.share-title {
+    margin: 0 8px 0 0;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.final-score {
+    color: #0f4d8f;
+    font-family: "Press Start 2P", cursive;
+    font-size: 18px;
+    margin-bottom: 9px;
+}
+
+.share-box, .restart-actions > .restart-bt {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.restart-bt {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    height: 68px;
+}
+.restart-bt img {
+    transition: transform 0.3s;
+    transform: rotate(0deg);
+    width: 80px;
+    height: 80px;
+    transform-origin: 50% 40% 0;
+}
+.restart-bt:hover img{
+    transform: rotate(-30deg);
+}
+
+.bt-default:hover {
+    border: 1px solid white;
+    box-shadow: inset 0 0 10px #84b6eb;
+}
+
+.mask {
+    background: #092c52;
+    transition: opacity 0.2s;
+    opacity: 0;
+    pointer-events: none;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 14;
+}
+.mask.active {
+    opacity: 0.6;
 }
 
 .github-corner:hover .octo-arm {
@@ -103,11 +265,13 @@ footer {
 .score {
     font-size: 40px;
     position: absolute;
-    text-shadow: 2px 2px #0b3664;
     top: 40px;
     letter-spacing: 5px;
     font-family: 'Press Start 2P', cursive;
+    text-shadow: 2px 2px #0b3664;
     color: #FFD200;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 @keyframes rainbowZigZag {
