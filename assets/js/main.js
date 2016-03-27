@@ -50,7 +50,7 @@ window.onload = () => {
             for (var i = 0, enemyLength = enemiesEl.length; i < enemyLength; i++) {
                 enemyNewLeft = (enemiesEl[i].style.left.replace('px', '') - 20) + 'px';
                 enemiesEl[i].style.left = enemyNewLeft;
-                if (enemiesEl[i].offsetLeft < -10) {
+                if (enemiesEl[i].offsetLeft < 70) {
                     document.body.removeChild(enemiesEl[i]);
                 }
             }
