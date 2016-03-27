@@ -22,6 +22,7 @@ header {
     width: 100%;
     left: 0;
     height: 80px;
+    z-index: 9;
 }
 
 footer {
@@ -33,6 +34,7 @@ footer {
     height: 60px;
     text-align: center;
     left: 0;
+    z-index: 9;
 }
 
 .github-corner:hover .octo-arm {
@@ -44,7 +46,7 @@ footer {
 }
 
 .github-holder p {
-    color: white;
+    color: #125399;
     font-family: Arial;
     display: inline-block;
     margin-right: 10px;
@@ -121,12 +123,16 @@ footer {
 }
 
 #nyan-lula {
-	background: url('../images/lula.gif') no-repeat;
-    background-size: 100%;
-    height: 100px;
+    height: 61px;
     position: relative;
-    width: 150px;
+    width: 100px;
     transition: top 0.1s, left 0.1s;
+}
+#nyan-lula img {
+    width: 126%;
+    position: absolute;
+    left: -25px;
+    top: -7px;
 }
 
 .part {

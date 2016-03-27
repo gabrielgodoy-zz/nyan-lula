@@ -10,10 +10,13 @@ window.onload = () => {
         */
         var lulaEl = document.getElementById('nyan-lula'),
             scoreEl = document.getElementsByClassName('score')[0],
+            enemiesEl,
+            moveEnemies,
             gameOver = false,
-            animRainbow,
             animScore,
-            moveLula;
+            animRainbow,
+            moveLula,
+            timeToSpawn = 1000;
 
         var moves = {
             movingLeft: false,
@@ -38,20 +41,35 @@ window.onload = () => {
         //     }
         // }, 30);
 
-        var moveEnemy = setInterval(() => {
-            createEnemy();
-            var enemyEl = document.querySelectorAll('.enemy')[0];
+        var spawnEnemyTimer = setTimeout(spawnEnemy, timeToSpawn);
 
-            var enemyNewLeft = (enemyEl.style.left.replace('px', '') - 20) + 'px';
-            enemyEl.style.left = enemyNewLeft;
+        moveEnemies = setInterval(() => {
+            enemiesEl = document.querySelectorAll('.enemy');
+            var enemyNewLeft;
 
-            if (enemyEl.offsetLeft < -10) {
-                document.body.removeChild(enemyEl);
+            for (var i = 0, enemyLength = enemiesEl.length; i < enemyLength; i++) {
+                enemyNewLeft = (enemiesEl[i].style.left.replace('px', '') - 20) + 'px';
+                enemiesEl[i].style.left = enemyNewLeft;
+                if (enemiesEl[i].offsetLeft < -10) {
+                    document.body.removeChild(enemiesEl[i]);
+                }
             }
-        }, 100);
+        }, 90);
 
         animScore = setInterval(() => {
             scoreEl.innerHTML = Number(scoreEl.innerHTML) + 1;
+
+            if (Number(scoreEl.innerHTML) >= 100) {
+                timeToSpawn = 700;
+            } else if (Number(scoreEl.innerHTML) >= 300) {
+                timeToSpawn = 500;
+            } else if (Number(scoreEl.innerHTML) >= 400) {
+                timeToSpawn = 300;
+            } else if (Number(scoreEl.innerHTML) >= 500) {
+                timeToSpawn = 200;
+            } else if (Number(scoreEl.innerHTML) >= 600) {
+                timeToSpawn = 100;
+            }
         }, 100);
 
         moveLula = setInterval(() => {
@@ -62,32 +80,41 @@ window.onload = () => {
                 },
                 docHeight = document.documentElement.offsetHeight,
                 docWidth = document.documentElement.offsetWidth,
-                enemies = document.querySelectorAll('.enemy')[0];
+                enemiesEl = document.querySelectorAll('.enemy');
 
-            if (lulaEl.offsetLeft + lulaEl.offsetWidth > enemies.offsetLeft &&
-                lulaEl.offsetLeft < enemies.offsetLeft + enemies.offsetWidth &&
-                lulaEl.offsetTop < enemies.offsetTop + enemies.offsetHeight &&
-                lulaEl.offsetTop + lulaEl.offsetHeight > enemies.offsetTop) {
+            for (var i = 0, enemyLength = enemiesEl.length; i < enemyLength; i++) {
+                if (lulaEl.offsetLeft + lulaEl.offsetWidth > enemiesEl[i].offsetLeft &&
+                    lulaEl.offsetLeft < enemiesEl[i].offsetLeft + enemiesEl[i].offsetWidth &&
+                    lulaEl.offsetTop < enemiesEl[i].offsetTop + enemiesEl[i].offsetHeight &&
+                    lulaEl.offsetTop + lulaEl.offsetHeight > enemiesEl[i].offsetTop) {
 
-                clearInterval(animScore);
-                clearInterval(moveEnemy);
-                gameOver = true;
-                document.body.classList.add('body-gameover');
+                    clearInterval(animScore);
+                    clearInterval(moveEnemies);
+                    clearTimeout(spawnEnemyTimer);
+                    gameOver = true;
+                    document.body.classList.add('body-gameover');
+                }
             }
+
             if (!gameOver) {
                 if (lulaEl.offsetLeft >= 20 && moves.movingLeft) {
                     lulaEl.style.left = (lula.leftPosClean - lula.pxToMove) + 'px';
                 }
 
-                if (docWidth - (lulaEl.offsetLeft + lulaEl.offsetWidth) >= 100 && moves.movingRight) {
+                if (docWidth - (lulaEl.offsetLeft + lulaEl.offsetWidth) >= 100 &&
+                    moves.movingRight) {
                     lulaEl.style.left = (lula.leftPosClean + lula.pxToMove) + 'px';
                 }
 
-                if (lulaEl.offsetTop >= 20 && moves.movingUp) {
+                if (
+                    lulaEl.offsetTop >= 20 && moves.movingUp) {
                     lulaEl.style.top = (lula.topPosClean - lula.pxToMove) + 'px';
                 }
 
-                if (docHeight - (lulaEl.offsetTop + lulaEl.offsetHeight) >= 100 && moves.movingDown) {
+                if (
+                    docHeight - (lulaEl.offsetTop + lulaEl.offsetHeight) >= 80 &&
+                    moves.movingDown
+                ) {
                     lulaEl.style.top = (lula.topPosClean + lula.pxToMove) + 'px';
                 }
             }
@@ -110,9 +137,14 @@ window.onload = () => {
         function createEnemy() {
             var div = document.createElement('div');
             div.className = 'enemy';
-            div.style.top = 100 + 'px';
+            div.style.top = Math.floor(Math.random() * (document.documentElement.offsetHeight - 100) + 1) + 'px';
             div.style.left = document.documentElement.offsetWidth + 'px';
             document.body.appendChild(div);
+        }
+
+        function spawnEnemy() {
+            createEnemy();
+            spawnEnemyTimer = setTimeout(spawnEnemy, timeToSpawn);
         }
 
         function keyDown(e) {
@@ -155,13 +187,13 @@ window.onload = () => {
 
         return {
             init() {
-                    this.bindEvents();
-                },
-                bindEvents() {
-                    document.addEventListener('keydown', keyDown);
-                    document.addEventListener('keyup', keyUp);
-                    window.addEventListener('resize', resizeDoc);
-                }
+                this.bindEvents();
+            },
+            bindEvents() {
+                document.addEventListener('keydown', keyDown);
+                document.addEventListener('keyup', keyUp);
+                window.addEventListener('resize', resizeDoc);
+            }
         };
     };
 
