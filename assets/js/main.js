@@ -10,6 +10,8 @@ window.onload = () => {
         */
         var lulaEl = document.getElementById('nyan-lula'),
             scoreEl = document.getElementsByClassName('score')[0],
+            nyanMusic = document.getElementById('nyan-music'),
+            sadMusic = document.getElementById('sad-music'),
             moveStars,
             starsEl,
             enemiesEl,
@@ -125,6 +127,8 @@ window.onload = () => {
                     clearTimeout(spawnEnemyTimer);
                     gameOver = true;
                     document.body.classList.add('body-gameover');
+                    nyanMusic.pause();
+                    sadMusic.play();
                 }
             }
 
