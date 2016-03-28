@@ -8,7 +8,11 @@ window.onload = () => {
         /* =============================================================
         Variables
         */
-        var lulaEl = document.getElementById('nyan-lula'),
+        var container = document.getElementsByClassName('container')[0],
+            startPopup = document.getElementsByClassName('start-popup')[0],
+            restartPopup = document.getElementsByClassName('restart-popup')[0],
+            mask = document.getElementsByClassName('mask')[0],
+            lulaEl = document.getElementById('nyan-lula'),
             scoreEl = document.getElementsByClassName('score')[0],
             nyanMusic = document.getElementById('nyan-music'),
             sadMusic = document.getElementById('sad-music'),
@@ -21,8 +25,9 @@ window.onload = () => {
             moveEnemies,
             gameOver = false,
             animScore,
-            finalScore,
             animRainbow,
+            animScoreTimer,
+            finalScore,
             moveLula,
             timeToSpawn = 1000,
             enemySpeed = 50;
@@ -57,34 +62,38 @@ window.onload = () => {
             nyanMusic.play();
             gameOver = false;
             timeToSpawn = 1000;
+            enemySpeed = 50;
+            finalScore = 0;
 
+            document.getElementsByClassName('final-score')[0].innerHTML = 0;
             document.getElementsByClassName('score')[0].innerHTML = 0;
 
-            document.getElementsByClassName('container')[0].classList.remove('body-gameover');
-            document.getElementsByClassName('mask')[0].classList.remove('active');
-            document.getElementsByClassName('restart-popup')[0].classList.remove('active-popup');
+            container.classList.remove('body-gameover');
+            mask.classList.remove('active');
+            restartPopup.classList.remove('active-popup');
 
-            document.getElementById('nyan-lula').style.left = '';
-            document.getElementById('nyan-lula').style.top = '';
+            lulaEl.style.left = '';
+            lulaEl.style.top = '';
 
             var enemies = document.body.querySelectorAll('.enemy');
             for (var i = 0, enemiesLength = enemies.length; i < enemiesLength; i++) {
-                document.body.removeChild(enemies[i]);
+                container.removeChild(enemies[i]);
             }
 
             var stars = document.body.querySelectorAll('.star');
             for (var j = 0, starsLength = stars.length; j < starsLength; j++) {
-                document.body.removeChild(stars[j]);
+                container.removeChild(stars[j]);
             }
 
         }
 
         function startGame() {
-            document.getElementsByClassName('mask')[0].classList.remove('active');
-            document.getElementsByClassName('start-popup')[0].classList.remove('active-popup');
-            document.getElementsByClassName('start-popup')[0].classList.add('hide-popup');
+            mask.classList.remove('active');
+            startPopup.classList.remove('active-popup');
+            startPopup.classList.add('hide-popup');
 
             spawnEnemyTimer = setTimeout(spawnEnemy, timeToSpawn);
+
             moveEnemies = setInterval(() => {
                 enemiesEl = document.querySelectorAll('.enemy');
                 var enemyNewLeft;
@@ -92,7 +101,7 @@ window.onload = () => {
                     enemyNewLeft = (enemiesEl[i].style.left.replace('px', '') - enemySpeed) + 'px';
                     enemiesEl[i].style.left = enemyNewLeft;
                     if (enemiesEl[i].offsetLeft < -170) {
-                        document.body.removeChild(enemiesEl[i]);
+                        container.removeChild(enemiesEl[i]);
                     }
                 }
             }, 90);
@@ -105,7 +114,7 @@ window.onload = () => {
                     starNewLeft = (starsEl[i].style.left.replace('px', '') - 10) + 'px';
                     starsEl[i].style.left = starNewLeft;
                     if (starsEl[i].offsetLeft < -7) {
-                        document.body.removeChild(starsEl[i]);
+                        container.removeChild(starsEl[i]);
                     }
                 }
             }, 100);
@@ -114,30 +123,7 @@ window.onload = () => {
                 createElement('star');
             }, 1000);
 
-            animScore = setInterval(() => {
-                scoreEl.innerHTML = Number(scoreEl.innerHTML) + 1;
-                if (Number(scoreEl.innerHTML) >= 100) {
-                    timeToSpawn = 700;
-                } else if (Number(scoreEl.innerHTML) >= 200) {
-                    enemySpeed = 80;
-                    timeToSpawn = 300;
-                } else if (Number(scoreEl.innerHTML) >= 300) {
-                    timeToSpawn = 240;
-                    enemySpeed = 100;
-                } else if (Number(scoreEl.innerHTML) >= 400) {
-                    timeToSpawn = 180;
-                    enemySpeed = 120;
-                } else if (Number(scoreEl.innerHTML) >= 500) {
-                    timeToSpawn = 120;
-                    enemySpeed = 150;
-                } else if (Number(scoreEl.innerHTML) >= 800) {
-                    timeToSpawn = 50;
-                    enemySpeed = 160;
-                } else if (Number(scoreEl.innerHTML) >= 1000) {
-                    timeToSpawn = 20;
-                    enemySpeed = 220;
-                }
-            }, 100);
+            animScoreTimer = setTimeout(animScoreFunc, 100);
 
             moveLula = setInterval(() => {
                 var lula = {
@@ -155,29 +141,25 @@ window.onload = () => {
                         lulaEl.offsetTop < enemiesEl[i].offsetTop + enemiesEl[i].offsetHeight &&
                         lulaEl.offsetTop + lulaEl.offsetHeight > enemiesEl[i].offsetTop) {
 
-                        clearInterval(animScore);
                         clearInterval(moveStars);
                         clearInterval(moveLula);
                         clearInterval(createStar);
                         clearInterval(moveEnemies);
+                        clearTimeout(animScoreTimer);
                         clearTimeout(spawnEnemyTimer);
 
                         gameOver = true;
-
 
                         finalScore = document.getElementsByClassName('score')[0].innerHTML;
                         document.getElementsByClassName('final-score')[0].innerHTML = finalScore + ' pontos';
                         document.getElementsByClassName('container')[0].classList.add('body-gameover');
 
-                        // TO-DO: Facebook
-
-
                         // Twitter
                         var twitterMsg = 'https://twitter.com/intent/tweet?text=Fiz ' + finalScore + ' pontos no Nyan Lula. Tente me superar =) http://goo.gl/lUhxkD';
                         document.getElementsByClassName('link-tw')[0].setAttribute('href', twitterMsg);
 
-                        document.getElementsByClassName('mask')[0].classList.add('active');
-                        document.getElementsByClassName('restart-popup')[0].classList.add('active-popup');
+                        mask.classList.add('active');
+                        restartPopup.classList.add('active-popup');
                         nyanMusic.pause();
                         sadMusic.play();
                     }
@@ -227,13 +209,41 @@ window.onload = () => {
             div.className = elClass;
             div.style.top = Math.floor(Math.random() * (document.documentElement.offsetHeight - 100) + 1) + 'px';
             div.style.left = document.documentElement.offsetWidth + 'px';
-            document.body.appendChild(div);
+            container.appendChild(div);
         }
 
 
         function spawnEnemy() {
             createElement('enemy');
             spawnEnemyTimer = setTimeout(spawnEnemy, timeToSpawn);
+        }
+
+        function animScoreFunc() {
+            scoreEl = document.getElementsByClassName('score')[0];
+            scoreEl.innerHTML = Number(scoreEl.innerHTML) + 1;
+            if (Number(scoreEl.innerHTML) >= 100 && Number(scoreEl.innerHTML) < 200) {
+                timeToSpawn = 700;
+                enemySpeed = 55;
+            } else if (Number(scoreEl.innerHTML) >= 200 && Number(scoreEl.innerHTML) < 300) {
+                timeToSpawn = 600;
+                enemySpeed = 60;
+            } else if (Number(scoreEl.innerHTML) >= 300 && Number(scoreEl.innerHTML) < 400) {
+                timeToSpawn = 600;
+                enemySpeed = 70;
+            } else if (Number(scoreEl.innerHTML) >= 400 && Number(scoreEl.innerHTML) < 500) {
+                timeToSpawn = 500;
+                enemySpeed = 80;
+            } else if (Number(scoreEl.innerHTML) >= 500 && Number(scoreEl.innerHTML) < 800) {
+                timeToSpawn = 440;
+                enemySpeed = 90;
+            } else if (Number(scoreEl.innerHTML) >= 800 && Number(scoreEl.innerHTML) < 1000) {
+                timeToSpawn = 350;
+                enemySpeed = 100;
+            } else if (Number(scoreEl.innerHTML) >= 1000) {
+                timeToSpawn = 300;
+                enemySpeed = 140;
+            }
+            animScoreTimer = setTimeout(animScoreFunc, 100);
         }
 
         function keyDown(e) {
@@ -300,18 +310,18 @@ window.onload = () => {
 
         return {
             init() {
-                    this.bindEvents();
-                },
-                bindEvents() {
-                    document.addEventListener('keydown', keyDown);
-                    document.addEventListener('keyup', keyUp);
-                    document.getElementsByClassName('start-bt')[0].addEventListener('click', startGame);
-                    document.getElementsByClassName('restart-bt')[0].addEventListener('click', restartGame);
-                    window.addEventListener('resize', resizeDoc);
+                this.bindEvents();
+            },
+            bindEvents() {
+                document.addEventListener('keydown', keyDown);
+                document.addEventListener('keyup', keyUp);
+                document.getElementsByClassName('start-bt')[0].addEventListener('click', startGame);
+                document.getElementsByClassName('restart-bt')[0].addEventListener('click', restartGame);
+                window.addEventListener('resize', resizeDoc);
 
-                    document.getElementsByClassName('link-fb')[0].addEventListener('click', shareFb);
-                    document.getElementsByClassName('link-tw')[0].addEventListener('click', shareTw);
-                }
+                document.getElementsByClassName('link-fb')[0].addEventListener('click', shareFb);
+                document.getElementsByClassName('link-tw')[0].addEventListener('click', shareTw);
+            }
         };
     };
 
