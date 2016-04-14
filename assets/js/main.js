@@ -212,7 +212,6 @@ window.onload = () => {
             container.appendChild(div);
         }
 
-
         function spawnEnemy() {
             createElement('enemy');
             spawnEnemyTimer = setTimeout(spawnEnemy, timeToSpawn);
